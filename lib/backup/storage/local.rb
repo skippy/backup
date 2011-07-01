@@ -19,7 +19,7 @@ module Backup
       def initialize(&block)
         load_defaults!
 
-        @path ||= "#{ENV['HOME']}/backups"
+        @path ||= "#{BASE_PATH}/backups"
 
         instance_eval(&block) if block_given?
 
@@ -68,9 +68,9 @@ module Backup
       end
 
       ##
-      # Replaces ~/ with the full path to the users $HOME directory
+      # Replaces ~/ with the full path to the users base path directory
       def fix_path!
-        @path = path.sub(/^\~\//, "#{ENV['HOME']}/")
+        @path = path.sub(/^\~\//, "#{BASE_PATH}/")
       end
 
     end
