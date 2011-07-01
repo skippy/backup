@@ -16,7 +16,7 @@ describe Backup::Storage::Local do
   end
 
   it 'should have defined the configuration properly' do
-    local.path.should == "#{ENV['HOME']}/backups/"
+    local.path.should == "#{Backup::BASE_PATH}/backups/"
     local.keep.should == 20
   end
 
@@ -29,12 +29,12 @@ describe Backup::Storage::Local do
       local.path = '~/my-backups'
     end
 
-    local.path.should == "#{ENV['HOME']}/my-backups"
+    local.path.should == "#{Backup::BASE_PATH}/my-backups"
   end
 
   it 'should have its own defaults' do
     local = Backup::Storage::Local.new
-    local.path.should == "#{ENV['HOME']}/backups"
+    local.path.should == "#{Backup::BASE_PATH}/backups"
   end
 
   describe '#transfer!' do
@@ -51,7 +51,7 @@ describe Backup::Storage::Local do
 
       FileUtils.expects(:cp).with(
         File.join(Backup::TMP_PATH, "#{ Backup::TIME }.#{ Backup::TRIGGER }.tar"),
-        File.join("#{ENV['HOME']}/backups/myapp", "#{ Backup::TIME }.#{ Backup::TRIGGER }.tar")
+        File.join("#{Backup::BASE_PATH}/backups/myapp", "#{ Backup::TIME }.#{ Backup::TRIGGER }.tar")
       )
 
       local.send(:transfer!)
@@ -60,15 +60,15 @@ describe Backup::Storage::Local do
 
   describe '#remove!' do
     it 'should remove the file from the remote server path' do
-      FileUtils.expects(:rm).with("#{ENV['HOME']}/backups/myapp/#{ Backup::TIME }.#{ Backup::TRIGGER }.tar")
+      FileUtils.expects(:rm).with("#{Backup::BASE_PATH}/backups/myapp/#{ Backup::TIME }.#{ Backup::TRIGGER }.tar")
       local.send(:remove!)
     end
   end
 
   describe '#create_remote_directories!' do
     it 'should properly create remote directories one by one' do
-      local.path = "#{ENV['HOME']}/backups/some_other_folder/another_folder"
-      FileUtils.expects(:mkdir_p).with("#{ENV['HOME']}/backups/some_other_folder/another_folder/myapp")
+      local.path = "#{Backup::BASE_PATH}/backups/some_other_folder/another_folder"
+      FileUtils.expects(:mkdir_p).with("#{Backup::BASE_PATH}/backups/some_other_folder/another_folder/myapp")
       local.send(:create_local_directories!)
     end
   end
