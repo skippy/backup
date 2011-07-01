@@ -86,12 +86,6 @@ describe Backup::Storage::S3 do
       s3.send(:transfer!)
     end
     
-    it 'should raise an exception if bucket exists but for someone else, with a nice err msg' do
-      connection.expects(:sync_clock)
-      connection.expects(:put_object).raises(Excon::Errors::Forbidden, "some s3 error msg")
-      lambda{ s3.send(:transfer!) }.should raise_exception(Exception, "An error occurred while trying to access this bucket.  It look like this bucket exists under a different account which you do not have access to." )
-    end
-
     it 'should pass through a general exception an exception if bucket exists but for someone else, with a nice err msg' do
       connection.expects(:sync_clock)
       connection.expects(:put_object).raises(Exception, "some s3 error msg")
